@@ -5,6 +5,8 @@ import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import "@cyntler/react-doc-viewer/dist/index.css";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { Button } from '../ui/button';
+import Link from 'next/link';
 
 interface DocCardProps {
     id: string;
@@ -14,13 +16,32 @@ interface DocCardProps {
     excuse_url: string;
 }
 
-const DocCard: React.FC<DocCardProps> = ({ id, created_at, excuse, extension, excuse_url }) => {
+const DocCard: React.FC<DocCardProps> = ({  created_at, excuse, extension, excuse_url }) => {
     const [isHovered, setIsHovered] = useState(false);
-    console.log(id)
+    // console.log(id)
     const docs = [
         { uri: excuse_url }
     ];
+    const handleWordDownload = async () => {
+        try {
+            const response = await fetch(excuse_url);
+            const blob = await response.blob();
 
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = `${excuse}.${extension}`;
+
+            document.body.appendChild(link);
+            link.click();
+
+            // Cleanup
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(downloadUrl);
+        } catch (error) {
+            console.error('Download failed:', error);
+        }
+    }
     return (
         <div className="lg:w-1/4 md:w-1/2 p-4 w-full rounded-md">
             <div className="block relative h-56 rounded overflow-hidden"
@@ -29,9 +50,15 @@ const DocCard: React.FC<DocCardProps> = ({ id, created_at, excuse, extension, ex
             >
                 <DocViewer documents={docs} pluginRenderers={DocViewerRenderers} />
             </div>
+
+            <Button className='border mt-2 active:scale-95 mx-auto' onClick={handleWordDownload}>Download {extension} file</Button>
+            <Button className='border mt-2 active:scale-95 mx-2'>
+
+                <Link href={extension == 'docx' ? 'https://www.ilovepdf.com/word_to_pdf' : 'https://www.ilovepdf.com/pdf_to_word'} target='_blank'>Ilovepdf {extension} to {extension == 'docx' ? "pdf" : "docx"} file</Link>
+            </Button>
             <motion.div
                 className="mt-4"
-                initial={{ opacity: 0, y: -10 }} 
+                initial={{ opacity: 0, y: -10 }}
                 animate={isHovered ? { opacity: 1, y: 0 } : { opacity: 0, y: -10 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
             >

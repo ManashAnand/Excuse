@@ -243,12 +243,12 @@ export function AnimatedFileInput() {
             By the student&apos;s <br />
             To the student&apos;s
           </motion.p>
-          <div className=" flex justify-center items-center container gap-4">
+          <div className=" flex justify-center items-center container gap-4 flex-col sm:flex-row">
 
-            <div className="space-y-2 min-w-96">
+            <div className="space-y-2 min-w-52 ">
               <Input
                 id="input-07"
-                className="border-transparent bg-muted shadow-none"
+                className="border-transparent bg-muted shadow-none mx-2"
                 placeholder={"Excuse in one line"}
                 type={"email"}
                 onChange={e => setExcuseText(e.target.value)}

@@ -23,7 +23,7 @@ const Records = () => {
         const fetchTickets = async () => {
             const { data, error } = await supabase
                 .from('docs')
-                .select('*')
+                .select('*').order('created_at', { ascending: false })
             console.log(error)
             if (data) {
                 setExcuses(data)
@@ -36,7 +36,7 @@ const Records = () => {
         <>
             <section className="text-gray-600 body-font">
                 <div className="container px-5 py-24 mx-auto">
-                    <div className="flex flex-wrap -m-4 border">
+                    <div className="flex flex-wrap -m-4 ">
                         {Excuses?.map(ticket => (
                             <DocCard
                                 key={ticket.id}
