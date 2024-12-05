@@ -33,6 +33,9 @@ export function AnimatedFileInput() {
   const [isDragging, setIsDragging] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [isUploading, setIsUploading] = useState(false)
+  const [excuseText, setExcuseText] = useState("")
+  const [extText, setExtText] = useState("pdf")
+
   const { toast } = useToast()
 
 
@@ -41,7 +44,6 @@ export function AnimatedFileInput() {
     if (!selectedFile) return
 
     setFile(selectedFile)
-    setIsUploading(true)
 
   }
 
@@ -72,6 +74,8 @@ export function AnimatedFileInput() {
   }
 
   const handleSubmitFile = async () => {
+    
+    setIsUploading(true)
     if (!file) {
       toast({
         title: "Error",
@@ -84,8 +88,14 @@ export function AnimatedFileInput() {
       const { data, error } = await supabase.storage
         .from("documents")
         .upload(file?.name, file);
-
-      if (error) throw error;
+        console.log(data)
+        if(error) throw error;
+      const { data: mainData, error: mainErr } = await supabase.from("doc").insert({
+        "excuse": excuseText,
+        "extension": extText,
+        "excuse_url": `https://gzswgnzgngqmomqiuilw.supabase.co/storage/v1/object/public/${data?.fullPath}`
+      })
+      if ( mainErr) throw error;
 
       toast({
         title: "File uploaded successfully!",
@@ -98,8 +108,8 @@ export function AnimatedFileInput() {
           minute: 'numeric',
         }),
       })
+      setIsUploading(false)
     } catch (error) {
-      console.error('Upload error:', error);
       toast({
         title: "Error uploading file.",
         description: new Date().toLocaleString('en-US', {
@@ -112,6 +122,8 @@ export function AnimatedFileInput() {
         }),
       })
       setFile(null);
+      
+      setIsUploading(false)
     } finally {
       setIsUploading(false)
     }
@@ -226,7 +238,8 @@ export function AnimatedFileInput() {
         <motion.div initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0, transition: { duration: 1 } }} >
           <motion.p className="title-font sm:text-4xl text-3xl mb-4 font-medium text-white">
             For the student&apos;s <br />
-            By the student&apos;s
+            By the student&apos;s <br />
+            To the student&apos;s
           </motion.p>
           <div className=" flex justify-center items-center container gap-4">
 
@@ -236,20 +249,21 @@ export function AnimatedFileInput() {
                 className="border-transparent bg-muted shadow-none"
                 placeholder={"Excuse in one line"}
                 type={"email"}
+                onChange={e => setExcuseText(e.target.value)}
               />
             </div>
             <div className="space-y-2 border-transparent bg-muted shadow-none rounded-md">
-              <Select defaultValue="s1">
+              <Select defaultValue="pdf" onValueChange={(value) => setExtText(value)}>
                 <SelectTrigger id="select-31">
                   <SelectValue placeholder="Select framework" />
                 </SelectTrigger>
                 <SelectContent className="[&_*[role=option]>span]:end-2 [&_*[role=option]>span]:start-auto [&_*[role=option]]:pe-8 [&_*[role=option]]:ps-2">
-                  <SelectItem value="s1">pdf</SelectItem>
-                  <SelectItem value="s2">doc/docx/word</SelectItem>
+                  <SelectItem value="pdf">pdf</SelectItem>
+                  <SelectItem value="docx">doc/docx/word</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-            <Button disabled={isUploading} className="border bg-white text-black" onClick={handleSubmitFile}>
+            <Button disabled={isUploading} className="border bg-white text-black hover:bg-white active:scale-95" onClick={handleSubmitFile}>
               {
                 isUploading ? (
                   <>
