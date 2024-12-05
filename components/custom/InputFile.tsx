@@ -99,7 +99,7 @@ export function AnimatedFileInput() {
       if ( mainErr) throw error;
 
       toast({
-        title: "File uploaded successfully!",
+        title: "File uploaded successfully! , Please Refresh",
         description: new Date().toLocaleString('en-US', {
           weekday: 'long',
           year: 'numeric',

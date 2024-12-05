@@ -1,6 +1,7 @@
 "use client";
 import React from 'react'
 import DocCard from './DocCard'
+import useSWR from 'swr'
 
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react'
@@ -14,24 +15,29 @@ interface ExcuseInterface {
 }
 
 const Records = () => {
-
+    const fetcher = async () => {
+        const supabase = createClientComponentClient();
+        const { data, error } = await supabase
+          .from('docs')
+          .select('*')
+          .order('created_at', { ascending: false });
+          
+        if (error) throw error;
+        console.log(data)
+        return data;
+      };
 
     const [Excuses, setExcuses] = useState<ExcuseInterface[]>([])
-    const supabase = createClientComponentClient();
 
+    const { data: excuses, error, isLoading } = useSWR('excuses', fetcher)
     useEffect(() => {
-        const fetchTickets = async () => {
-            const { data, error } = await supabase
-                .from('docs')
-                .select('*').order('created_at', { ascending: false })
-            console.log(error)
-            if (data) {
-                setExcuses(data)
-            }
+        if (excuses) {
+          setExcuses(excuses);
         }
-
-        fetchTickets()
-    }, [supabase])
+      }, [excuses]);
+    
+    if (error) return <div>failed to load</div>
+    if (isLoading) return <div>loading...</div>
     return (
         <>
             <section className="text-gray-600 body-font">
