@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Upload, Check, X, FileIcon } from 'lucide-react'
+import { Upload, X, FileIcon } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useToast } from "@/hooks/use-toast"
@@ -95,6 +95,7 @@ export function AnimatedFileInput() {
         "extension": extText,
         "excuse_url": `https://gzswgnzgngqmomqiuilw.supabase.co/storage/v1/object/public/${data?.fullPath}`
       })
+      console.log(mainData)
       if ( mainErr) throw error;
 
       toast({
@@ -121,6 +122,7 @@ export function AnimatedFileInput() {
           minute: 'numeric',
         }),
       })
+      console.log(error)
       setFile(null);
       
       setIsUploading(false)

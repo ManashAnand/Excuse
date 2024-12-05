@@ -16,7 +16,7 @@ interface DocCardProps {
 
 const DocCard: React.FC<DocCardProps> = ({ id, created_at, excuse, extension, excuse_url }) => {
     const [isHovered, setIsHovered] = useState(false);
-
+    console.log(id)
     const docs = [
         { uri: excuse_url }
     ];

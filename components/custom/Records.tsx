@@ -24,7 +24,7 @@ const Records = () => {
             const { data, error } = await supabase
                 .from('docs')
                 .select('*')
-
+            console.log(error)
             if (data) {
                 setExcuses(data)
             }
