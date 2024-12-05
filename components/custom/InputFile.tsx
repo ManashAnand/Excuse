@@ -90,7 +90,7 @@ export function AnimatedFileInput() {
         .upload(file?.name, file);
         console.log(data)
         if(error) throw error;
-      const { data: mainData, error: mainErr } = await supabase.from("doc").insert({
+      const { data: mainData, error: mainErr } = await supabase.from("docs").insert({
         "excuse": excuseText,
         "extension": extText,
         "excuse_url": `https://gzswgnzgngqmomqiuilw.supabase.co/storage/v1/object/public/${data?.fullPath}`
