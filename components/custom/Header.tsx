@@ -11,7 +11,7 @@ export default function Header() {
     <>
       <div className="flex justify-center items-center">
         <motion.div initial={{ y: -100 }} animate={{ skewX: isSecondAnimation ? [10,-10,10] : 0, y: 20, transition: { duration: isSecondAnimation ? 2 : 1, repeat: isSecondAnimation ? Infinity : 0 } }} className="text-white text-4xl underline decoration-dotted" onAnimationComplete={() => setIsSecondAnimation(true)}>
-          <div className="">Excuse</div>
+          <div className="first-letter:text-red-500">Excuse</div>
         </motion.div>
       </div>
     </>
